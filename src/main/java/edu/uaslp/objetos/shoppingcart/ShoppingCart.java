@@ -25,6 +25,9 @@ public class ShoppingCart {
         for(Item item: items){
                 totalCost = totalCost.add(item.getUnitCost().multiply(BigDecimal.valueOf(item.getQuantity())));
             }
+        if (items.size()==0){
+            throw new EmptyShoppingCartException("Empty car");
+        }
             return totalCost;
 
     }
@@ -43,8 +46,8 @@ public class ShoppingCart {
 
     }
 
-    public boolean getItemsCount() {
-        return itemsCount;
+    public int getItemsCount() {
+        return items.size();
     }
 
     public ArrayList<Item> getItems() {
@@ -52,5 +55,10 @@ public class ShoppingCart {
     }
 
     public void removeItem(String itemCode2) {
+        for(int i =0; i < items.size(); i++){
+            if(items.get(i).getCode().equals(itemCode2)){
+                items.remove(i);
+            }
+        }
     }
 }
