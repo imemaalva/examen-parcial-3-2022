@@ -2,13 +2,12 @@ package edu.uaslp.objetos.shoppingcart;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ShoppingCart {
 
-    private boolean itemsCount;
-
-    private ArrayList<Item> items = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     private int size;
 
     public boolean isEmpty() {
@@ -21,43 +20,62 @@ public class ShoppingCart {
     public BigDecimal getTotalCost() {
         BigDecimal totalCost = BigDecimal.ZERO;
 
-
-        for(Item item: items){
-                totalCost = totalCost.add(item.getUnitCost().multiply(BigDecimal.valueOf(item.getQuantity())));
-            }
-        if (items.size()==0){
-            throw new EmptyShoppingCartException("Empty car");
+        if(items.isEmpty()){
+            throw new EmptyShoppingCartException("Empty shopping car");
         }
-            return totalCost;
+        for(Item item: items){
+            totalCost = totalCost.add(item.getUnitCost().multiply(BigDecimal.valueOf(item.getQuantity())));
+        }
+
+        return totalCost;
+
 
     }
 
     public void addItem(Item item) {
-        if(items.size()>0 || items.size()<5){
-            if(item == null || item.getProviderCode()!=""){
-                items.add(item);
-            }else{
-                throw new InvalidDataException("Quantity must be greater than zero and lower than five");
+
+        BigDecimal aux = new BigDecimal(0);
+
+
+            if(item.getCode() == null){
+                throw new InvalidDataException("Null or empty string not allowed for item code");
+            }if( item.getProviderCode()==""){
+                throw new InvalidDataException("Null or empty string not allowed for provider code");
+            }if(item.getUnitCost().compareTo(aux) == -1){
+                throw new InvalidDataException("Cost must be greater than zero");
             }
-        } else {
-            throw new InvalidDataException("Quantity must be greater than zero and lower than five");
 
+        for(Item existentItem: items){
+            if(existentItem.getCode().equals(item.getCode()) && existentItem.getUnitCost().compareTo(item.getUnitCost()) == 0){
+               existentItem.setQuantity(existentItem.getQuantity() + item.getQuantity() );
+               return;
+            }
         }
-
+        items.add(item);
     }
 
     public int getItemsCount() {
-        return items.size();
+        int itemsCount = 0;
+
+        for(Item item: items){
+            itemsCount += item.getQuantity();
+        }
+        return itemsCount;
     }
 
-    public ArrayList<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
     public void removeItem(String itemCode2) {
-        for(int i =0; i < items.size(); i++){
-            if(items.get(i).getCode().equals(itemCode2)){
-                items.remove(i);
+
+        for(Item removeItem: items){
+            if(removeItem.getCode() == itemCode2){
+                items.remove(itemCode2);
+                removeItem.setQuantity(removeItem.getQuantity()-1);
+                if(removeItem.getQuantity()==0){
+                    items.remove(removeItem);
+                }
             }
         }
     }

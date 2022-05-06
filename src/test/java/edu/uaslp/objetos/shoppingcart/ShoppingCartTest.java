@@ -266,7 +266,7 @@ public class ShoppingCartTest {
     }
 
     @Test
-    public void givenAShoppingCartWithItems_whenRemoveItemWithQuantity1_thenItemIsRemoved() throws ItemNotFoundException {
+    public void givenAShoppingCartWithItems_whenRemoveItemWithQuantity1_thenItemIsRemoved() throws ItemNotFoundException{
         // Given:
         ShoppingCart shoppingCart = new ShoppingCart();
         String itemCode1 = "98234291";
